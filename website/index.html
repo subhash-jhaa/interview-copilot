@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Copilot - Real-Time AI Assistant for Live Meetings & Interviews</title>
+    <meta name="description" content="Real-time AI assistant providing contextual help during video calls, interviews, presentations, and meetings using screen capture and live audio analysis.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #090a0f;
+            --bg-card: rgba(18, 20, 29, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 40%);
+        }
+
+        /* Header / Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 32px;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .btn-download-sm {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+            color: #fff !important;
+            padding: 10px 20px;
+            border-radius: 99px;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 14px var(--primary-glow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        }
+
+        .btn-download-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--primary-glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1100px;
+            margin: 80px auto 40px;
+            text-align: center;
+            padding: 0 24px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 99px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 70%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 720px;
+            margin: 0 auto 36px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 60px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+            color: #fff;
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 8px 30px var(--primary-glow);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid var(--border-glass);
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Banner Preview */
+        .preview-container {
+            max-width: 1000px;
+            margin: 0 auto 100px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(99, 102, 241, 0.2);
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+        }
+
+        .preview-container img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Features Section */
+        .features {
+            max-width: 1100px;
+            margin: 0 auto 120px;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 60px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #818cf8;
+        }
+
+        .card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-glass);
+            padding: 40px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .cta-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <span>🎙️</span> Interview Copilot
+        </div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="https://github.com/subhash-jhaa/interview-copilot-" target="_blank">GitHub</a>
+            <a href="https://github.com/subhash-jhaa/interview-copilot-/releases/latest" id="nav-download-btn" class="btn-download-sm">Download .exe</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="badge">
+            <span>🚀</span> Powered by Google Gemini 2.0 Flash Live
+        </div>
+        <h1>Your Real-Time AI Assistant for Live Meetings & Interviews</h1>
+        <p>Get instant contextual answers during interviews, sales pitches, and presentations with audio analysis and screen capture transparent overlay.</p>
+        
+        <div class="cta-buttons">
+            <a href="https://github.com/subhash-jhaa/interview-copilot-/releases/latest" id="main-download-btn" class="btn-primary">
+                <span>💻</span> Download for Windows (.exe)
+            </a>
+            <a href="https://github.com/subhash-jhaa/interview-copilot-" id="github-repo-btn" class="btn-secondary" target="_blank">
+                View on GitHub
+            </a>
+        </div>
+    </section>
+
+    <!-- Banner Preview -->
+    <div class="preview-container">
+        <img src="assets/banner.png" alt="Interview Copilot Banner Preview">
+    </div>
+
+    <!-- Download Section -->
+    <section class="download-box" id="download">
+        <h2>Download Interview Copilot</h2>
+        <p>Get the latest release for your platform directly from GitHub Releases.</p>
+
+        <div class="download-options">
+            <a href="https://github.com/subhash-jhaa/interview-copilot-/releases/latest" class="platform-card" id="dl-win">
+                <div class="icon">🪟</div>
+                <div class="name">Windows</div>
+                <div class="file-info">.exe Installer (v0.8.0)</div>
+            </a>
+            <a href="https://github.com/subhash-jhaa/interview-copilot-/releases/latest" class="platform-card" id="dl-mac">
+                <div class="icon">🍎</div>
+                <div class="name">macOS</div>
+                <div class="file-info">.dmg Installer</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <h2 class="section-title">Built for High-Stakes Performance</h2>
+        <p class="section-subtitle">Discreet, fast, and intelligent real-time desktop copilot.</p>
+
+        <div class="grid">
+            <div class="card">
+                <div class="icon-box">⚡</div>
+                <h3>Live Audio & Screen Capture</h3>
+                <p>Captures system audio and screen context in real-time to generate precise hints as questions are asked.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon-box">👻</div>
+                <h3>Transparent Stealth Overlay</h3>
+                <p>Always-on-top HUD window that stays hidden from screen sharing software with click-through toggle mode.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon-box">🎯</div>
+                <h3>Multiple Tailored Profiles</h3>
+                <p>Pre-configured modes for Technical Interviews, Sales Calls, Business Meetings, Presentations, and Negotiations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Interview Copilot. Open Source software released under GPL-3.0 License.</p>
+    </footer>
+
+</body>
+</html>
